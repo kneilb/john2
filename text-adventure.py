@@ -25,8 +25,30 @@ def do_room(player, room):
 
 
 class Player(object):
+    def __init__(self):
+        self._items = {}
+
     def command(self, command):
+        if command in ["i", "inv", "inventory"]:
+            if self._items:
+                print("You are carrying:")
+                for k, v in self._items:
+                    print(f"{k} {v}")
+            else:
+                print("Your pockets are empty!")
+            print()
+
+            return True
+
         return False
+
+
+class Item(object):
+    pass
+
+
+class Goat(Item):
+    pass
 
 
 class Room(object):
@@ -68,11 +90,11 @@ class CheeseRoom(Room):
 
 class HaddockRoom(Room):
     def __init__(self):
-        super().__init__("You are in a room full of haddock.")
+        super().__init__("You are in a room, featuring a pool containing a huge haddock.")
 
     def command(self, command):
         if ("fish" in command or "catch" in command) and "haddock" in command:
-            print("You catch the haddock. It eats you all up!")
+            print("You attempt to catch the haddock. It eats you all up!")
             print("Then it sneezes, and you are thrown into the air!")
             print("After a long flight, you find yourself landing at a new location.")
             return "crossroads"
@@ -180,3 +202,4 @@ while True:
 # factor out moving out of rooms into Room (with a dict of directions -> room names)
 # Make goat into its own class, probably a subclass of Object / Item or something similar?
 # Add "look at" or "describe" commands, to get more detail about things
+# Make items at a location part of Room
