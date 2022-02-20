@@ -3,10 +3,13 @@ def get_command():
     return input("# ")
 
 
-def do_room(room):
+def do_room(player, room):
     room.intro()
 
     command = get_command()
+
+    if player.command(command):
+        return
 
     new_room = room.command(command)
 
@@ -21,14 +24,33 @@ def do_room(room):
     return new_room
 
 
+class Player(object):
+    def command(self, command):
+        return False
+
+
 class Room(object):
-    def __init__(self, intro="default room!"):
+    def __init__(self, intro="default room!", exits={}):
         self._intro = intro
+        self._exits = exits
 
     def intro(self):
         print(self._intro)
 
+        if self._exits:
+            if len(self._exits) == 1:
+                start = "is an exit"
+            else:
+                start = "are exits"
+            exits = ", ".join(list(self._exits.keys()))
+            print(f"There {start} to the {exits}.")
+        else:
+            print("There are no obvious exits.")
+
     def command(self, command):
+        if command in self._exits:
+            return self._exits[command]
+
         return None
 
 
@@ -41,7 +63,7 @@ class CheeseRoom(Room):
             print("You eat the cheese, and fall down a massive hole to the next room")
             return "haddock"
 
-        return None
+        return super().command(command)
 
 
 class HaddockRoom(Room):
@@ -55,7 +77,7 @@ class HaddockRoom(Room):
             print("After a long flight, you find yourself landing at a new location.")
             return "crossroads"
 
-        return None
+        return super().command(command)
 
 
 class CrossRoadsRoom(Room):
@@ -63,9 +85,18 @@ class CrossRoadsRoom(Room):
         self.has_goat = True
         self.goat_alive = True
 
+        super().__init__(
+            "You are at a crossroads.",
+            {
+                "north": "north",
+                "south": "south",
+                "east": "east",
+                "west": "west"
+            }
+        )
+
     def intro(self):
-        print("You are at a crossroads.")
-        print("There are exits to the north, south, east and west.")
+        super().intro()
 
         if self.has_goat:
             print()
@@ -99,17 +130,17 @@ class CrossRoadsRoom(Room):
                 self.has_goat = False
                 return "crossroads"
 
-        if "north" in command:
-            return "death"
-        
-        if "south" in command:
-            return "death"
+        return super().command(command)
 
-        if "east" in command:
-            return "death"
 
-        if "west" in command:
-            return "death"
+class DeadEndRoom(Room):
+    def __init__(self, exit_dir):
+        super().__init__(
+            "You find yourself at a dead end.",
+            {
+                exit_dir: "crossroads"
+            }
+        )
 
 
 class DeathRoom(Room):
@@ -128,13 +159,24 @@ rooms = {
     "cheese": CheeseRoom(),
     "haddock": HaddockRoom(),
     "crossroads": CrossRoadsRoom(),
+    "north": DeadEndRoom("south"),
+    "south": DeadEndRoom("north"),
+    "east": DeadEndRoom("west"),
+    "west": DeadEndRoom("east"),
     "win": WinRoom(),
     "death": DeathRoom()
 }
 
+player = Player()
 current_room = rooms["cheese"]
 
 while True:
-    new_room = do_room(current_room)
+    new_room = do_room(player, current_room)
     if new_room:
         current_room = rooms[new_room]
+
+# TODOs
+# "user" commands" (including inventory) - needs to take room as a param (e.g. for drop)
+# factor out moving out of rooms into Room (with a dict of directions -> room names)
+# Make goat into its own class, probably a subclass of Object / Item or something similar?
+# Add "look at" or "describe" commands, to get more detail about things
