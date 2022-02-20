@@ -1,0 +1,5 @@
+input("WELCOME TO MAD LIBS press enter to play")
+animal = input("Give me the name of a animal...")
+colour = input("Give me the name of a colour...")
+description = input("Give me an adjective for an object...")
+print(f"The {colour} {animal} disappeared into the {description} hedge!")
