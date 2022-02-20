@@ -13,7 +13,7 @@ total = tip_amount + bill_amount
 tip_per = tip_amount / people_there
 bill_per = total / people_there
 
-print(f"The tip amount is {tip_amount}.")
-print(f"The total is {total}.")
-print(f"The tip per person is {tip_per}.")
-print(f"The total per person is {bill_per}.")
+print(f"The tip amount is {tip_amount}")
+print(f"The total is {total}")
+print(f"The tip per person is {tip_per}")
+print(f"The total per person is {bill_per}")
