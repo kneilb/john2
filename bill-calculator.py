@@ -1,0 +1,12 @@
+input("WELCOME TO BIll CALCULATOR press enter to continue")
+bill_amount = input("Please enter the bill amount:")
+tip_percentage = input("Please enter the tip percentage:")
+people_there = input("Please enter the amount of people sharing the bill:")
+tip_amount = int(bill_amount) * int(tip_percentage) / 100
+total = int(tip_amount) + int(bill_amount)
+tip_per = tip_amount / int(people_there)
+bill_per = int(bill_amount) / int(people_there)
+print(f"The tip amount is {tip_amount}.")
+print(f"The total is {total}.")
+print(f"The tip per person is {tip_per}.")
+print(f"The total per person is {bill_per}.")
