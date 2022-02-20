@@ -40,6 +40,12 @@ class Player(object):
 
             return True
 
+        if "drop" in command:
+            item = command.split(" ")[-1]
+            if item not in self._items:
+                print("Sorry, you don't seem to be carrying one of those!")
+                return True
+
         return False
 
 
@@ -147,7 +153,7 @@ class CrossRoadsRoom(Room):
                 self.goat_alive = False
                 return "crossroads"
 
-            if "take" in command or "carry" in command:
+            if "take" in command or "carry" in command or "pick up" in command:
                 print("You pick up the goat")
                 self.has_goat = False
                 return "crossroads"
@@ -173,7 +179,7 @@ class DeathRoom(Room):
 
 class WinRoom(Room):
     def intro(self):
-        print("You win! Please leave immediately.")
+        print("You win! Did you cheat?!")
         exit(0)
 
 
