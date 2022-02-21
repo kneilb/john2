@@ -3,8 +3,8 @@ while True:
     password = input("Enter the password:")
     if password == "Daddyisbest" or password == "6547":
         print("System online")
+        break
+    elif int(password) < 6547:
+        print("Your password is too low!")
     else:
-        if int(password) < 6547:
-            print("Your password is to low!")
-        else:
-            print("Your password is to high!")
+        print("Your password is too high!")
