@@ -5,7 +5,7 @@ from typing import Optional
 
 def get_command() -> str:
     print("What is your command?")
-    return input("# ")
+    return input("# ").lower()
 
 
 def do_room(player, room):
@@ -126,7 +126,7 @@ class Room(object):
             item_name = command.split(" ")[-1]
             item = self.remove_item(item_name)
             if not item:
-                print("Sorry, I can't find one of those!")
+                print("Sorry, I can't find one of those to pick up!")
             else:
                 print(f"You pick up the {item_name}.")
 
@@ -209,7 +209,7 @@ class CrossRoadsRoom(Room):
 
             if ("feed" in command or "give" in command) and ("cheese" in command or "haddock" in command):
                 print("The goat happily munches up the food you offer it.")
-                return "win"
+                return "crossroads"
 
             if "shoot" in command:
                 print("You shoot at the goat, but miss and hit yourself in the knee.")
@@ -218,11 +218,6 @@ class CrossRoadsRoom(Room):
             if "kill" in command:
                 print("You manage to kill the goat with your bear hands (sic).")
                 self.goat_alive = False
-                return "crossroads"
-
-            if "take" in command or "carry" in command or "pick up" in command:
-                print("You pick up the goat")
-                self.has_goat = False
                 return "crossroads"
 
         return super().command(command, player)
