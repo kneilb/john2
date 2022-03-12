@@ -21,6 +21,25 @@ def roll_again(choices, list):
         if choices[a] == "-":
             list[a] = random.randint(1, 6)
 
+def computer_think1(fish): # roll everything
+    option = ""
+    for a in range(fish):
+        option = option + "-"
+    print(f"{name2} is thinking...")
+    time.sleep(random.randint(7, 15))
+    return option
+
+def computer_think2(fish): # roll < 4
+    option = ""
+    for a in range(fish):
+        if a < 4:
+            option = option + "-"
+        else:
+            option = option + "_"
+    print(f"{name2} is thinking...")
+    time.sleep(random.randint(7, 15))
+    return option
+
 # main
 input("WELCOME TO THROW OFF!!! Press enter to continue!")
 name = input("Enter your name: ")
@@ -58,5 +77,10 @@ print(f"{name2}'s roll.")
 print(f"{dice_list2}")
 total2 = sum(dice_list2)
 print(f"{total2}")
+# future: decide on a strategy at random!
+# which = ["computer_think1(times)", "computer_think2(times)"]
+strategy = computer_think2(times)
+roll_again(strategy, dice_list2)
+print(f"{dice_list2}")
 
 winner()
