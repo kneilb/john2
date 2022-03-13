@@ -32,12 +32,13 @@ def computer_think1(fish): # roll everything
 def computer_think2(fish): # roll < 4
     option = ""
     for a in range(fish):
-        if a < 4:
+        if dice_list2[a] < 4:
             option = option + "-"
         else:
             option = option + "_"
     print(f"{name2} is thinking...")
     time.sleep(random.randint(7, 15))
+    print(option)
     return option
 
 # main
