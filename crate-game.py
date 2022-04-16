@@ -6,6 +6,22 @@ CANVAS_WIDTH = 500
 PLAYER_SIZE = 30
 CRATE_SIZE = 30
 
+death_phrase = ["OW!!! That was a big hedgehog!",
+"BANG!!! Ow... That was T.N.T",
+"A cheesemonkey!!! Nooooooooooooooo...",
+"NO!!! BAD DORIS!!! ARGHHHHHHH, MY ARM!!!",
+"Wot? A house? SPLAT... OW.",
+"KILLER SUDOKU!!! IT WILL KILL ME!!!",
+"YOU WIN... DEATH!!!",
+"To be honest, you did quite well.",
+"JOHN IS BETTER THAN YOU!!!",
+"JOHN IS BETTER THAN YOU!!!",
+"JOHN IS BETTER THAN YOU!!!",
+"JOHN IS BETTER THAN YOU!!!",
+"JOHN IS BETTER THAN YOU!!!",
+"<there was an error>, <you are MEH>",
+"DID Y0U uNdErStAnD tH4T yOuR SC0RE WAS O? N0? N0? WeLl IT W4S... L00K... HA HA just kidding (;"]
+
 # functions
 def orb_move(event):
     # print(event)
@@ -24,7 +40,8 @@ def drop_crate():
         red_crates.append(crate)
     else:
         black_crates.append(crate)
-    window.after(1000, drop_crate)
+    if playing:
+        window.after(1000, drop_crate)
 
 def move_crate():
     all_crates = black_crates + red_crates
@@ -33,7 +50,8 @@ def move_crate():
         if canvas.coords(c)[1] > CANVAS_HEIGHT:
             new_x = random.randint(1, 470)
             canvas.coords(c, new_x, 0, new_x + CRATE_SIZE, CRATE_SIZE)
-    window.after(50, move_crate)
+    if playing:
+        window.after(50, move_crate)
 
 def collision(item1, item2, distance):
     item1_coords = canvas.coords(item1)
@@ -46,7 +64,7 @@ def check_collisions():
     for c in red_crates:
         hit = collision(orb, c, CRATE_SIZE)
         if hit:
-            print("hit on craTE")
+            death()
     for c in black_crates:
         hit = collision(orb, c, CRATE_SIZE)
         if hit:
@@ -57,9 +75,18 @@ def check_collisions():
 
 def update_score():
     global crates_got
+    global crate_speed
     global message1
     crates_got += 1
     message1.config(text = f"you collected {crates_got} crates!")
+    if crates_got % 2 == 1:
+        crate_speed += 1
+
+def death():
+    global playing
+    if playing:
+        game_over = canvas.create_text(150, 150, text=random.choice(death_phrase))
+        playing = False
 
 ##########
 ## MAIN ##
@@ -77,6 +104,7 @@ for i in range(5):
 black_crates = []
 red_crates = []
 
+playing = True
 main_message = canvas.create_text(200, 200, text="crate collecter!!!")
 # main_message.config()
 crates_got = 0
