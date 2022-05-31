@@ -53,6 +53,20 @@ time.sleep(random.randint(1, 5))
 
 dice_list = dice_roll(times)
 print()
+if name == "{;":
+    opinion_film1 = input("Would you like to watch a film? ")
+    if opinion_film1 == "yes" or "Yes" or "YES" or "fine" or "Fine" or "FINE":
+        print(' {;"hi"    :) ')
+        time.sleep(3)
+        print(' {;      "time to get the goods":)')
+        time.sleep(3)
+        print('{;"got em"      :)')
+        time.sleep(3)
+        print('{;"arghhhh... HELP!!!"        =)')
+        time.sleep(4)
+        print('       "ha... thanks!"=)')
+        time.sleep(3)
+
 print(f"{name}'s roll.")
 print(f"{dice_list}")
 total = sum(dice_list)
@@ -68,10 +82,11 @@ total = sum(dice_list)
 print(f"{total}")
 
 # computer code
-name_list = ["Holly", "Andrew", "Michael", "Felix", "Archie", "Ellis", "Bella", "Charlie"]
+name_list = ["Holly", "Andrew", "Michael", "Felix", "Archie", "Ellis", "Bella", "Charlie", "violet", "THRASHER123", "Best", "{;", "y0U n0oB"]
 name2 = random.choice(name_list)
 
 # computer go
+time.sleep(4.444444444444444444444444444444444444444444444444444444444444444444444444444444444444)
 dice_list2 = dice_roll(times)
 print()
 print(f"{name2}'s roll.")
