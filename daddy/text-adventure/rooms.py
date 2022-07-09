@@ -6,10 +6,14 @@ from items import Item, Lantern
 from player import Player
 
 class Room(object):
-    def __init__(self, intro="default room!", exits={}, items={}):
+    def __init__(self, id="default", intro="default room!", exits={}, items={}):
+        self._id = id
         self._intro = intro
         self._exits = exits
         self._items = copy.deepcopy(items)
+
+    def id(self):
+        return self._id
 
     def intro(self):
         print(self._intro)
@@ -41,7 +45,7 @@ class Room(object):
                 print(f"You pick up the {item_name}.")
 
             player.add_item(item)
-            # TODO: return non-none! (id of current room...)
+            return self._id
 
         return None
 
@@ -56,6 +60,7 @@ class Cheese(Room):
     def __init__(self):
         lantern = Lantern()
         super().__init__(
+            "cheese",
             "You are in a room full of cheese.",
             {},
             {
@@ -73,7 +78,7 @@ class Cheese(Room):
 
 class Haddock(Room):
     def __init__(self):
-        super().__init__("You are in a room, featuring a pool containing a huge haddock.")
+        super().__init__("haddock", "You are in a room, featuring a pool containing a huge haddock.")
 
     def command(self, command: str, player: Player) -> Optional[str]:
         if ("fish" in command or "catch" in command) and "haddock" in command:
@@ -92,6 +97,7 @@ class CrossRoads(Room):
         self.goat_fed = False
 
         super().__init__(
+            "crossroads",
             "You are at a crossroads.",
             {
                 "north": "north",
@@ -139,8 +145,9 @@ class CrossRoads(Room):
 
 
 class DeadEnd(Room):
-    def __init__(self, exit_dir):
+    def __init__(self, id, exit_dir):
         super().__init__(
+            id,
             "You find yourself at a dead end.",
             {
                 exit_dir: "crossroads"
@@ -149,12 +156,18 @@ class DeadEnd(Room):
 
 
 class Death(Room):
+    def __init__(self):
+        super().__init__("death")
+
     def intro(self):
         print("You die! Please leave immediately.")
         exit(0)
 
 
 class Win(Room):
+    def __init__(self):
+        super().__init__("win")
+
     def intro(self):
         print("You win! Did you cheat?!")
         exit(0)

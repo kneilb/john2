@@ -36,17 +36,22 @@ def do_room(player: Player, room: Room) -> Optional[str]:
     return new_room
 
 
-locations = {
-    "cheese": rooms.Cheese(),
-    "haddock": rooms.Haddock(),
-    "crossroads": rooms.CrossRoads(),
-    "north": rooms.DeadEnd("south"),
-    "south": rooms.DeadEnd("north"),
-    "east": rooms.DeadEnd("west"),
-    "west": rooms.DeadEnd("east"),
-    "win": rooms.Win(),
-    "death": rooms.Death()
-}
+def add_room(room: Room):
+    locations[room.id()] = room
+
+
+locations = {}
+
+
+add_room(rooms.Cheese())
+add_room(rooms.Haddock())
+add_room(rooms.CrossRoads())
+add_room(rooms.DeadEnd("north", "south"))
+add_room(rooms.DeadEnd("south", "north"))
+add_room(rooms.DeadEnd("east", "west"))
+add_room(rooms.DeadEnd("west", "east"))
+add_room(rooms.Win())
+add_room(rooms.Death())
 
 player = Player()
 current_room = locations["cheese"]
