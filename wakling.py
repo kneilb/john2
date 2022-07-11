@@ -4,7 +4,7 @@ window = Tk()
 window.title("Wakling")
 
 orb = None
-colour = "blue"
+colour = "black"
 
 def orb_move(event):
     global colour
@@ -24,8 +24,20 @@ def orb_move(event):
     if k == "BackSpace":
         x1, y1, x2, y2 = canvas.coords(orb)
         canvas.create_oval(x1, y1, x2, y2, fill="white", outline="white")
-    if k == "one":
+    if k == "1":
         colour = "black"
+    if k == "2":
+        colour = "blue"
+    if k == "3":
+        colour = "red"
+    if k == "4":
+        colour = "yellow"
+    if k == "5":
+        colour = "green"
+    if k == "6":
+        colour = "purple"
+    if k == "7":
+        colour = "pink"
 
 def words1():
     global orb
