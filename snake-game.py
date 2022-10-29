@@ -16,23 +16,22 @@ SNAKE_MOVE_INTERVAL = 500
 snake_velocity = (0,0)
 
 snake_body = []
-snake_colours = []
-sweets = []
+snake_colours = ["green", "red", "yellow"]
+sweets = set()
 
 
 # functions
+def out_of_bounds(pos):
+    return pos[0] < 0 or \
+       pos[1] < 0 or \
+       pos[0] > CELLS_X or \
+       pos[1] > CELLS_Y
+
 def to_canvas_x(x):
     return CELL_SIZE * x
 
 def to_canvas_y(y):
     return CELL_SIZE * y
-
-def to_cell_x(x):
-    return x / CELL_SIZE
-
-def to_cell_y(y):
-    return y / CELL_SIZE
-
 
 def spawn_sweet():
     sweet_pos = (
@@ -41,26 +40,41 @@ def spawn_sweet():
     )
 
     if sweet_pos not in sweets:
-        sweets.append(sweet_pos)
+        sweets.add(sweet_pos)
 
+def sweet_present(x, y):
+    sweet_pos = (x, y)
+    return sweet_pos in sweets
+
+def remove_sweet(x, y):
+    sweet_pos = (x, y)
+    sweets.remove(sweet_pos)
 
 def add_new_segment(x, y, colour="green"):
     global snake_body
 
-    new_segment = canvas.create_oval(
+    snake_body.insert(0, [x, y])
+
+def remove_last_segment():
+    del snake_body[-1]
+
+def draw_segment(x, y, colour):
+    canvas.create_oval(
         to_canvas_x(x),
         to_canvas_y(y),
         to_canvas_x(x + 1),
         to_canvas_y(y + 1),
         fill=colour
     )
-    snake_body.insert(0, new_segment)
 
-
-def eat_sweet(x, y):
-    # in the position the last segment of the snake "moved from"
-    last_segment = snake_body[-1]
-    add_new_segment(last_segment, y)
+def draw_sweet(x, y):
+    canvas.create_rectangle(
+        to_canvas_x(x) + CELL_SIZE / 4,
+        to_canvas_y(y) + CELL_SIZE / 4,
+        to_canvas_x(x + 1) - CELL_SIZE / 4,
+        to_canvas_y(y + 1) - CELL_SIZE / 4,
+        fill="red"
+    )
 
 def key_event(event):
     global snake_velocity
@@ -75,63 +89,55 @@ def key_event(event):
     elif k == "Left":
         snake_velocity = (-1, 0)
 
-    # print(event.keysym)
     print(f"Velocity is {snake_velocity}")
 
-def sweet_present(*args):
-    return False
-
 def move_snake():
-    pos = canvas.coords(snake_body[0])
+    dead = False
+    head_pos = snake_body[0]
 
-    new_pos = copy(pos)
-    new_pos[0] += snake_velocity[0] * CELL_SIZE
-    new_pos[1] += snake_velocity[1] * CELL_SIZE
-    new_pos[2] += snake_velocity[0] * CELL_SIZE
-    new_pos[3] += snake_velocity[1] * CELL_SIZE
+    new_pos = copy(head_pos)
+    new_pos[0] += snake_velocity[0]
+    new_pos[1] += snake_velocity[1]
 
-    print(pos, snake_velocity, "->", new_pos)
+    print(head_pos, snake_velocity, "->", new_pos)
 
-    if new_pos[0] < 0 or \
-       new_pos[1] < 0 or \
-       new_pos[2] > CANVAS_WIDTH or \
-       new_pos[3] > CANVAS_HEIGHT:
-        print("crash!")
-        # TODO: dead
-        # TODO: also dead if we hit a bit of our own body!
-    elif sweet_present(new_pos):
-        pass
+    if out_of_bounds(new_pos) or (snake_velocity != (0, 0) and new_pos in snake_body):
+        print("crash")
+        dead = True
+
     else:
-        # canvas.coords(snake_body[0], new_pos[0], new_pos[1], new_pos[2], new_pos[3])
-        add_new_segment(to_cell_x(new_pos[0]), to_cell_y(new_pos[1]))
-        canvas.delete(snake_body[-1])
+        add_new_segment(new_pos[0], new_pos[1])
 
-    #TODO!!
-    sweet_on_new_space = True
-    if sweet_on_new_space:
-        # last_seg_coords = canvas.coords(snake_body[-1])
-        # new_segment_position = to_cell_x(last_seg
-        pass
+        if sweet_present(new_pos[0], new_pos[1]):
+            remove_sweet(new_pos[0], new_pos[1])
+            spawn_sweet()
+        else:
+            remove_last_segment()
 
-    # Loop through and move them all
-    # Add on the new one
+    for i in canvas.find_all():
+        canvas.delete(i)
 
-    
+    for i, c in enumerate(snake_body):
+        colour = snake_colours[i % len(snake_colours)]
+        draw_segment(c[0], c[1], colour)
 
-    # TODO: if new position contains a sweet, add a new body piece at the last piece's position instead
+    for s in sweets:
+        draw_sweet(s[0], s[1])
 
-    window.after(SNAKE_MOVE_INTERVAL, move_snake)
+    if not dead:
+        window.after(SNAKE_MOVE_INTERVAL, move_snake)
 
 ##########
 ## MAIN ##
 ##########
 window = Tk()
-window.title("car")
+window.title("snake!")
 
 canvas = Canvas(window, width=CANVAS_WIDTH, height=CANVAS_HEIGHT)
 canvas.pack()
 
 add_new_segment(0, 0)
+spawn_sweet()
 
 canvas.bind_all("<Key>", key_event)
 
