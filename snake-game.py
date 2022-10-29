@@ -9,8 +9,7 @@ CANVAS_WIDTH = 480
 CELL_SIZE = 30
 CELLS_X = int(CANVAS_WIDTH / CELL_SIZE)
 CELLS_Y = int(CANVAS_HEIGHT / CELL_SIZE)
-
-SNAKE_MOVE_INTERVAL = 500
+MOVE_INTERVAL = 500
 
 # global variables
 snake_velocity = (0,0)
@@ -54,7 +53,7 @@ def remove_sweet(x, y):
     sweets.remove(sweet_pos)
 
 def add_new_segment(x, y):
-    snake_body.insert(0, [x, y])
+    snake_body.insert(0, (x, y))
 
 def remove_last_segment():
     del snake_body[-1]
@@ -96,9 +95,10 @@ def move_snake():
     dead = False
     head_pos = snake_body[0]
 
-    new_pos = copy(head_pos)
-    new_pos[0] += snake_velocity[0]
-    new_pos[1] += snake_velocity[1]
+    new_pos = (
+        head_pos[0] + snake_velocity[0],
+        head_pos[1] + snake_velocity[1]
+    )
 
     print(head_pos, snake_velocity, "->", new_pos)
 
@@ -119,14 +119,14 @@ def move_snake():
         canvas.delete(i)
 
     for i, c in enumerate(snake_body):
-        colour = snake_colours[i % len(snake_colours)]
+        colour = "black" if i == 0 else snake_colours[i % len(snake_colours)]
         draw_segment(c[0], c[1], colour)
 
     for s in sweets:
         draw_sweet(s[0], s[1])
 
     if not dead:
-        window.after(SNAKE_MOVE_INTERVAL, move_snake)
+        window.after(MOVE_INTERVAL, move_snake)
 
 ################################################################################
 ##                                   MAIN                                     ##
@@ -143,5 +143,5 @@ spawn_sweet()
 
 canvas.bind_all("<Key>", key_event)
 
-window.after(SNAKE_MOVE_INTERVAL, move_snake)
+window.after(MOVE_INTERVAL, move_snake)
 window.mainloop()
