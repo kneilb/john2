@@ -9,13 +9,15 @@ CANVAS_WIDTH = 480
 CELL_SIZE = 30
 CELLS_X = int(CANVAS_WIDTH / CELL_SIZE)
 CELLS_Y = int(CANVAS_HEIGHT / CELL_SIZE)
+BORDER_X = CANVAS_WIDTH - (CELLS_X * CELL_SIZE)
+BORDER_Y = CANVAS_HEIGHT - (CELLS_Y * CELL_SIZE)
 MOVE_INTERVAL = 500
+SEGMENT_COLOURS = ("green", "red", "yellow")
 
 # global variables
-snake_velocity = (0,0)
+velocity = (0,0)
 
-snake_body = []
-snake_colours = ["green", "red", "yellow"]
+body = []
 sweets = set()
 
 
@@ -27,10 +29,10 @@ def out_of_bounds(pos):
        pos[1] >= CELLS_Y
 
 def to_canvas_x(x):
-    return CELL_SIZE * x
+    return BORDER_X + CELL_SIZE * x
 
 def to_canvas_y(y):
-    return CELL_SIZE * y
+    return BORDER_Y + CELL_SIZE * y
 
 def spawn_sweet():
     while True:
@@ -40,7 +42,7 @@ def spawn_sweet():
         )
 
         if sweet_pos not in sweets and \
-           sweet_pos not in snake_body:
+           sweet_pos not in body:
             sweets.add(sweet_pos)
             return
 
@@ -53,10 +55,10 @@ def remove_sweet(x, y):
     sweets.remove(sweet_pos)
 
 def add_new_segment(x, y):
-    snake_body.insert(0, (x, y))
+    body.insert(0, (x, y))
 
 def remove_last_segment():
-    del snake_body[-1]
+    del body[-1]
 
 def draw_segment(x, y, colour):
     canvas.create_oval(
@@ -77,32 +79,32 @@ def draw_sweet(x, y):
     )
 
 def key_event(event):
-    global snake_velocity
+    global velocity
     k = event.keysym
 
     if k == "Up":
-        snake_velocity = (0, -1)
+        velocity = (0, -1)
     elif k == "Down":
-        snake_velocity = (0, 1)
+        velocity = (0, 1)
     elif k == "Left":
-        snake_velocity = (-1, 0)
+        velocity = (-1, 0)
     elif k == "Right":
-        snake_velocity = (1, 0)
+        velocity = (1, 0)
 
-    print(f"Velocity is {snake_velocity}")
+    print(f"Velocity is {velocity}")
 
 def move_snake():
     dead = False
-    head_pos = snake_body[0]
+    head_pos = body[0]
 
     new_pos = (
-        head_pos[0] + snake_velocity[0],
-        head_pos[1] + snake_velocity[1]
+        head_pos[0] + velocity[0],
+        head_pos[1] + velocity[1]
     )
 
-    print(head_pos, snake_velocity, "->", new_pos)
+    print(head_pos, velocity, "->", new_pos)
 
-    if out_of_bounds(new_pos) or (snake_velocity != (0, 0) and new_pos in snake_body):
+    if out_of_bounds(new_pos) or (velocity != (0, 0) and new_pos in body):
         print("crash")
         dead = True
 
@@ -118,8 +120,8 @@ def move_snake():
     for i in canvas.find_all():
         canvas.delete(i)
 
-    for i, c in enumerate(snake_body):
-        colour = "black" if i == 0 else snake_colours[i % len(snake_colours)]
+    for i, c in enumerate(body):
+        colour = "black" if i == 0 else SEGMENT_COLOURS[i % len(SEGMENT_COLOURS)]
         draw_segment(c[0], c[1], colour)
 
     for s in sweets:
