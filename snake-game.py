@@ -24,8 +24,8 @@ sweets = set()
 def out_of_bounds(pos):
     return pos[0] < 0 or \
        pos[1] < 0 or \
-       pos[0] > CELLS_X or \
-       pos[1] > CELLS_Y
+       pos[0] >= CELLS_X or \
+       pos[1] >= CELLS_Y
 
 def to_canvas_x(x):
     return CELL_SIZE * x
@@ -34,13 +34,16 @@ def to_canvas_y(y):
     return CELL_SIZE * y
 
 def spawn_sweet():
-    sweet_pos = (
-        random.randint(0, CELLS_X),
-        random.randint(0, CELLS_Y)
-    )
+    while True:
+        sweet_pos = (
+            random.randint(0, CELLS_X - 1),
+            random.randint(0, CELLS_Y - 1)
+        )
 
-    if sweet_pos not in sweets:
-        sweets.add(sweet_pos)
+        if sweet_pos not in sweets and \
+           sweet_pos not in snake_body:
+            sweets.add(sweet_pos)
+            return
 
 def sweet_present(x, y):
     sweet_pos = (x, y)
@@ -50,9 +53,7 @@ def remove_sweet(x, y):
     sweet_pos = (x, y)
     sweets.remove(sweet_pos)
 
-def add_new_segment(x, y, colour="green"):
-    global snake_body
-
+def add_new_segment(x, y):
     snake_body.insert(0, [x, y])
 
 def remove_last_segment():
@@ -84,10 +85,10 @@ def key_event(event):
         snake_velocity = (0, -1)
     elif k == "Down":
         snake_velocity = (0, 1)
-    elif k == "Right":
-        snake_velocity = (1, 0)
     elif k == "Left":
         snake_velocity = (-1, 0)
+    elif k == "Right":
+        snake_velocity = (1, 0)
 
     print(f"Velocity is {snake_velocity}")
 
@@ -127,9 +128,10 @@ def move_snake():
     if not dead:
         window.after(SNAKE_MOVE_INTERVAL, move_snake)
 
-##########
-## MAIN ##
-##########
+################################################################################
+##                                   MAIN                                     ##
+################################################################################
+
 window = Tk()
 window.title("snake!")
 
