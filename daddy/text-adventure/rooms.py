@@ -43,8 +43,8 @@ class Room(object):
                 print("Sorry, I can't find one of those to pick up!")
             else:
                 print(f"You pick up the {item_name}.")
+                player.add_item(item)
 
-            player.add_item(item)
             return self._id
 
         return None
