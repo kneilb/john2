@@ -9,6 +9,11 @@ colour = "black"
 def orb_move(event):
     global colour
     print(event)
+
+    # TODO: Needs Python 3.10
+    # match event.keysym:
+    #   case "Left":
+
     k = event.keysym
     if k == "Left":
         canvas.move(orb,-10,0)
